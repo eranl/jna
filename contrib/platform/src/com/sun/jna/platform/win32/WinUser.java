@@ -30,7 +30,6 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.Union;
 import com.sun.jna.platform.win32.BaseTSD.ULONG_PTR;
-import com.sun.jna.platform.win32.WinDef.HKL;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.win32.StdCallLibrary.StdCallCallback;
 import com.sun.jna.win32.W32APITypeMapper;
@@ -2088,4 +2087,46 @@ public interface WinUser extends WinDef {
      * Bitmask for the RESERVED2 key modifier.
      */
     int MODIFIER_RESERVED2_MASK = 32;
+
+    class HPOWERNOTIFY extends PVOID {
+        public HPOWERNOTIFY() {
+        }
+
+        public HPOWERNOTIFY(Pointer pointer) {
+            super(pointer);
+        }
+    }
+
+    HPOWERNOTIFY RegisterPowerSettingNotification(
+            /*[in]*/ HANDLE hRecipient,
+            /*[in]*/ Guid.GUID PowerSettingGuid,
+            /*[in]*/ DWORD Flags);
+
+    BOOL UnregisterPowerSettingNotification(
+            /*[in]*/ HPOWERNOTIFY Handle
+    );
+
+    int WM_POWERBROADCAST = 0x0218;
+    int PBT_APMSUSPEND = 0x0004;
+    int PBT_APMRESUMEAUTOMATIC = 0x0012;
+    int PBT_POWERSETTINGCHANGE = 0x8013;
+
+    @FieldOrder({"PowerSetting", "DataLength", "Data"})
+    class POWERBROADCAST_SETTING extends Structure {
+        public Guid.GUID PowerSetting;
+        public DWORD DataLength;
+        public UCHAR Data[] = new UCHAR[1];
+
+        public POWERBROADCAST_SETTING(Pointer p) {
+            super(p);
+            read();
+        }
+
+        @Override
+        public final void read() {
+            int size = (int) getPointer().getLong(fieldOffset("DataLength"));
+            Data = new UCHAR[size];
+            super.read();
+        }
+    }
 }
