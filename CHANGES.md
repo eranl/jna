@@ -15,6 +15,7 @@ Bug Fixes
 * [#1644](https://github.com/java-native-access/jna/issues/1644): Fix bug in VARDESC and TYPEDESC causing an illegal memory access - [@lwahonen](https://github.com/lwahonen)
 * [#1715](https://github.com/java-native-access/jna/pull/1715): Fix `UdevDevice.getSysname()` calling `udev_device_get_syspath` instead of `udev_device_get_sysname` - [@dbwiddis](https://github.com/dbwiddis).
 * [#1721](https://github.com/java-native-access/jna/pull/1721): Fix switched `serverName`/`domainName` arguments in `Netapi32Util#getDCName` - [@dbwiddis](https://github.com/dbwiddis).
+* [#1722](https://github.com/java-native-access/jna/pull/1722): Fix `Advapi32#RegisterServiceCtrlHandler` using wrong `Handler` type - [@dbwiddis](https://github.com/dbwiddis).
 
 Release 5.18.1
 ==============
