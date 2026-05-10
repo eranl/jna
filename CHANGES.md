@@ -10,6 +10,7 @@ Features
 * [#1696](https://github.com/java-native-access/jna/pull/1696): Add `LARGE_INTEGER.ByValue` to `LARGE_INTEGER` in `WinNT.java` - [@baier233](https://github.com/baier233).
 * [#1697](https://github.com/java-native-access/jna/pull/1697): Add WlanApi module - [@eranl](https://github.com/eranl).
 * [#1718](https://github.com/java-native-access/jna/pull/1718): Add `Cups` to `c.s.j.p.unix` providing CUPS printing system bindings for destinations, jobs, options, and server configuration - [@dbwiddis](https://github.com/dbwiddis).
+* [#1720](https://github.com/java-native-access/jna/pull/1720): Add `groupCount` and `groupMasks` fields to `CACHE_RELATIONSHIP` in `c.s.j.p.win32.WinNT`, matching the updated Windows struct layout - [@dbwiddis](https://github.com/dbwiddis).
 
 Bug Fixes
 ---------
