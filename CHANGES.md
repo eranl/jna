@@ -12,6 +12,7 @@ Features
 * [#1718](https://github.com/java-native-access/jna/pull/1718): Add `Cups` to `c.s.j.p.unix` providing CUPS printing system bindings for destinations, jobs, options, and server configuration - [@dbwiddis](https://github.com/dbwiddis).
 * [#1720](https://github.com/java-native-access/jna/pull/1720): Add `groupCount` and `groupMasks` fields to `CACHE_RELATIONSHIP` in `c.s.j.p.win32.WinNT`, matching the updated Windows struct layout - [@dbwiddis](https://github.com/dbwiddis).
 * [#1719](https://github.com/java-native-access/jna/pull/1719): Add `CoreGraphics` to `c.s.j.p.mac` with Quartz Window Services and Display Services bindings; implement `getAllWindows()` in `MacWindowUtils` - [@dbwiddis](https://github.com/dbwiddis).
+* [#1723](https://github.com/java-native-access/jna/pull/1723): Add `ProcFdInfo`, `InSockInfo`, `TcpSockInfo`, `proc_pidfdinfo`, `statfs64`, and `vm_deallocate` to `c.s.j.p.mac.SystemB` - [@dbwiddis](https://github.com/dbwiddis).
 
 Bug Fixes
 ---------
