@@ -33,6 +33,7 @@ import com.sun.jna.Structure;
 import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
+import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 
 public interface SystemB extends LibCAPI, Library {
@@ -580,6 +581,13 @@ public interface SystemB extends LibCAPI, Library {
      *            The host's page size (in bytes), set on success.
      * @return 0 on success; sets errno on failure
      */
+    int host_page_size(int hostPort, NativeLongByReference pPageSize);
+
+    /**
+     * @deprecated Use
+     *             {@link #host_page_size(int, NativeLongByReference)}
+     */
+    @Deprecated
     int host_page_size(int hostPort, LongByReference pPageSize);
 
     /**
