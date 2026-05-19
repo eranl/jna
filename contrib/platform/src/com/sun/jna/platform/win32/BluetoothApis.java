@@ -29,7 +29,7 @@ import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.Union;
 import com.sun.jna.platform.win32.WinBase.SYSTEMTIME;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
-import com.sun.jna.ptr.PointerByReference;
+import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 import com.sun.jna.win32.StdCallLibrary;
 import com.sun.jna.win32.W32APIOptions;
 
@@ -41,7 +41,7 @@ import com.sun.jna.win32.W32APIOptions;
 public interface BluetoothApis extends StdCallLibrary {
 
     /** Instance of BluetoothApis. */
-    BluetoothApis INSTANCE = Native.load("BluetoothApis", BluetoothApis.class, W32APIOptions.DEFAULT_OPTIONS);
+    BluetoothApis INSTANCE = Native.load("BluetoothApis", BluetoothApis.class, W32APIOptions.UNICODE_OPTIONS);
 
     /** Maximum Bluetooth device name length. */
     int BLUETOOTH_MAX_NAME_SIZE = 248;
@@ -202,7 +202,7 @@ public interface BluetoothApis extends StdCallLibrary {
      * @see <a href=
      *      "https://learn.microsoft.com/en-us/windows/win32/api/bluetoothapis/nf-bluetoothapis-bluetoothfindfirstradio">BluetoothFindFirstRadio</a>
      */
-    HANDLE BluetoothFindFirstRadio(BLUETOOTH_FIND_RADIO_PARAMS pbtfrp, PointerByReference phRadio);
+    HANDLE BluetoothFindFirstRadio(BLUETOOTH_FIND_RADIO_PARAMS pbtfrp, HANDLEByReference phRadio);
 
     /**
      * Finds the next installed Bluetooth radio.
@@ -213,7 +213,7 @@ public interface BluetoothApis extends StdCallLibrary {
      * @see <a href=
      *      "https://learn.microsoft.com/en-us/windows/win32/api/bluetoothapis/nf-bluetoothapis-bluetoothfindnextradio">BluetoothFindNextRadio</a>
      */
-    boolean BluetoothFindNextRadio(HANDLE hFind, PointerByReference phRadio);
+    boolean BluetoothFindNextRadio(HANDLE hFind, HANDLEByReference phRadio);
 
     /**
      * Closes the enumeration handle for Bluetooth radios.

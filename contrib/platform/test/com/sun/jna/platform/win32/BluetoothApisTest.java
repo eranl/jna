@@ -33,7 +33,7 @@ import com.sun.jna.platform.win32.BluetoothApis.BLUETOOTH_DEVICE_SEARCH_PARAMS;
 import com.sun.jna.platform.win32.BluetoothApis.BLUETOOTH_FIND_RADIO_PARAMS;
 import com.sun.jna.platform.win32.BluetoothApis.BLUETOOTH_RADIO_INFO;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
-import com.sun.jna.ptr.PointerByReference;
+import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 
 /**
  * Tests for {@link BluetoothApis}.
@@ -58,13 +58,13 @@ public class BluetoothApisTest {
     @Test
     public void testBluetoothFindFirstRadio() {
         BLUETOOTH_FIND_RADIO_PARAMS radioParams = new BLUETOOTH_FIND_RADIO_PARAMS();
-        PointerByReference phRadio = new PointerByReference();
+        HANDLEByReference phRadio = new HANDLEByReference();
 
         // This may return null if no Bluetooth radio is present, which is acceptable
         HANDLE hFind = BluetoothApis.INSTANCE.BluetoothFindFirstRadio(radioParams, phRadio);
         if (hFind != null) {
             try {
-                HANDLE hRadio = new HANDLE(phRadio.getValue());
+                HANDLE hRadio = phRadio.getValue();
                 try {
                     assertNotNull("Radio handle should not be null", hRadio);
 
