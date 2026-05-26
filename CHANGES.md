@@ -23,6 +23,7 @@ Bug Fixes
 * [#1722](https://github.com/java-native-access/jna/pull/1722): Fix `Advapi32#RegisterServiceCtrlHandler` using wrong `Handler` type - [@dbwiddis](https://github.com/dbwiddis).
 * [#1636](https://github.com/java-native-access/jna/issues/1636): Drop hard dependency on java.lang.SecurityManager/java.security.AccessController - [@matthiasblaesing](https://github.com/matthiasblaesing).
 * [#1724](https://github.com/java-native-access/jna/pull/1724): Fix `host_page_size` in `c.s.j.p.mac.SystemB` and `getxattr`/`setxattr`/`listxattr` in `c.s.j.p.mac.XAttr` using `long` instead of pointer-sized types for `size_t`/`ssize_t` parameters - [@dbwiddis](https://github.com/dbwiddis).
+* [#1727](https://github.com/java-native-access/jna/pull/1727): Include DragonFlyBSD in `NativeLibrary` versioned library resolution, libc special-case loading, and 64-bit search paths - [@dbwiddis](https://github.com/dbwiddis).
 
 Release 5.18.1
 ==============
