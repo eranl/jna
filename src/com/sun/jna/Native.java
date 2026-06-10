@@ -35,13 +35,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodHandles.Lookup;
-import java.lang.invoke.MethodType;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -184,15 +181,15 @@ public final class Native implements Version {
     private static final int TYPE_BOOL = 4;
     private static final int TYPE_LONG_DOUBLE = 5;
 
-    private static final MethodHandle stackWalkerGetInstance;
+    private static final Method stackWalkerGetInstance;
     private static final Enum stackWalkerRetainClassReference;
-    private static final MethodHandle stackWalkerWalk;
+    private static final Method stackWalkerWalk;
     private static final Object stackWalkerFilter;
 
-    private static final MethodHandle securityManagerExposerConstructor;
-    private static final MethodHandle securityManagerGetClassContext;
+    private static final Constructor securityManagerExposerConstructor;
+    private static final Method securityManagerGetClassContext;
 
-    private static final MethodHandle accessControllerDoPrivileged;
+    private static final Method accessControllerDoPrivileged;
 
     static final int MAX_ALIGNMENT;
     static final int MAX_PADDING;
@@ -270,18 +267,17 @@ public final class Native implements Version {
         MAX_PADDING = (Platform.isMac() && Platform.isPPC()) ? 8 : MAX_ALIGNMENT;
 
         Enum stackWalkerRetainClassReferenceBuilder;
-        MethodHandle stackWalkerGetInstanceBuilder;
-        MethodHandle stackWalkerWalkBuilder;
+        Method stackWalkerGetInstanceBuilder;
+        Method stackWalkerWalkBuilder;
         Object stackWalkerFilterBuilder;
         try {
-            Lookup lookup = MethodHandles.lookup();
             Class<?> stackWalkerClass = Class.forName("java.lang.StackWalker");
             Class<? extends Enum> stackWalkerOptionClass = (Class<? extends Enum>) Class.forName("java.lang.StackWalker$Option");
             stackWalkerRetainClassReferenceBuilder = Enum.valueOf(stackWalkerOptionClass, "RETAIN_CLASS_REFERENCE");
-            stackWalkerGetInstanceBuilder = lookup.findStatic(stackWalkerClass, "getInstance", MethodType.methodType(stackWalkerClass, stackWalkerOptionClass));
-            stackWalkerWalkBuilder = lookup.findVirtual(stackWalkerClass, "walk", MethodType.methodType(Object.class, java.util.function.Function.class));
+            stackWalkerGetInstanceBuilder = stackWalkerClass.getMethod("getInstance", stackWalkerOptionClass);
+            stackWalkerWalkBuilder = stackWalkerClass.getMethod("walk", java.util.function.Function.class);
             Class<?> stackframe = Class.forName("java.lang.StackWalker$StackFrame");
-            MethodHandle stackFrameGetDeclaringClass = lookup.findVirtual(stackframe, "getDeclaringClass", MethodType.methodType(Class.class));
+            Method stackFrameGetDeclaringClass = stackframe.getMethod("getDeclaringClass");
             stackWalkerFilterBuilder = new java.util.function.Function<Stream<Object>, Class<?>>() {
                 @Override
                 public Class<?> apply(Stream<Object> t) {
@@ -306,13 +302,12 @@ public final class Native implements Version {
         stackWalkerWalk = stackWalkerWalkBuilder;
         stackWalkerFilter = stackWalkerFilterBuilder;
 
-        MethodHandle securityManagerExposerConstructorBuilder;
-        MethodHandle securityManagerGetClassContextBuilder;
+        Constructor<?> securityManagerExposerConstructorBuilder;
+        Method securityManagerGetClassContextBuilder;
         try {
-            Lookup lookup = MethodHandles.lookup();
             Class<?> securityManagerExposerClass = Class.forName("com.sun.jna.SecurityManagerExposer");
-            securityManagerExposerConstructorBuilder = lookup.findConstructor(securityManagerExposerClass, MethodType.methodType(void.class));
-            securityManagerGetClassContextBuilder = lookup.findVirtual(securityManagerExposerClass, "getClassContext", MethodType.methodType(Class[].class));
+            securityManagerExposerConstructorBuilder = securityManagerExposerClass.getDeclaredConstructor();
+            securityManagerGetClassContextBuilder = securityManagerExposerClass.getDeclaredMethod("getClassContext");
         } catch (Throwable ex) {
             LOG.log(Level.FINE, "Failed to initialize stack accessor method SecurityManager", ex);
             securityManagerExposerConstructorBuilder = null;
@@ -321,11 +316,10 @@ public final class Native implements Version {
         securityManagerExposerConstructor = securityManagerExposerConstructorBuilder;
         securityManagerGetClassContext = securityManagerGetClassContextBuilder;
 
-        MethodHandle accessControllerDoPrivilegedBuilder = null;
+        Method accessControllerDoPrivilegedBuilder = null;
         try {
-            Lookup lookup = MethodHandles.lookup();
             Class<?> accessControllerClass = Class.forName("java.security.AccessController");
-            accessControllerDoPrivilegedBuilder = lookup.findStatic(accessControllerClass, "doPrivileged", MethodType.methodType(Object.class, PrivilegedAction.class));
+            accessControllerDoPrivilegedBuilder = accessControllerClass.getMethod("doPrivileged", PrivilegedAction.class);
         } catch (Throwable ex) {
             LOG.log(Level.FINE, "Failed to initialize AccessController#doPrivileged", ex);
             accessControllerDoPrivilegedBuilder = null;
@@ -1352,7 +1346,7 @@ public final class Native implements Version {
         try {
 
             final ClassLoader cl = Native.class.getClassLoader();
-            Method m = (Method) accessControllerDoPrivileged.invoke(new PrivilegedAction<Method>() {
+            Method m = (Method) accessControllerDoPrivileged.invoke(null, new PrivilegedAction<Method>() {
                 @Override
                 public Method run() {
                     try {
@@ -1624,7 +1618,7 @@ public final class Native implements Version {
         //   3. Stackframe: method of outer caller
         if (stackWalkerGetInstance != null) {
             try {
-                Object walker = stackWalkerGetInstance.invoke(stackWalkerRetainClassReference);
+                Object walker = stackWalkerGetInstance.invoke(null, stackWalkerRetainClassReference);
                 Class<?> caller = (Class<?>) stackWalkerWalk.invoke(walker, stackWalkerFilter);
                 return caller;
             } catch (Throwable ex) {
@@ -1635,7 +1629,7 @@ public final class Native implements Version {
         if (securityManagerExposerConstructor != null) {
             Class<?>[] context = null;
             try {
-                Object securityManagerExposer = securityManagerExposerConstructor.invoke();
+                Object securityManagerExposer = securityManagerExposerConstructor.newInstance();
                 context = (Class<?>[]) securityManagerGetClassContext.invoke(securityManagerExposer);
             } catch (Throwable ex) {
                 LOG.log(Level.WARNING, "Failed to invoke SecurityManagerExposer#<init> or SecurityManagerExposer#getClassContext", ex);

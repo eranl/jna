@@ -2,15 +2,12 @@ NOTE: as of JNA 4.0, JNA is now dual-licensed under LGPL and AL 2.0 (see LICENSE
 
 NOTE: JNI native support is typically incompatible between minor versions, and almost always incompatible between major versions.
 
-Next Release (5.20.0)
+Next Release (5.19.1)
 =====================
-
-Features
---------
 
 Bug Fixes
 ---------
-
+* [#1730](https://github.com/java-native-access/jna/issues/1730): Replace usage of `MethodHandle` with reflection to restore support for older Android releases - [@matthiasblaesing](https://github.com/matthiasblaesing).
 
 Release 5.19.0
 ==============
