@@ -1102,9 +1102,7 @@ public final class Native implements Version {
             String libName = "/com/sun/jna/" + Platform.RESOURCE_PREFIX + "/" + mappedName;
             File lib = extractFromResourcePath(libName, Native.class.getClassLoader());
             if (lib == null) {
-                if (lib == null) {
-                    throw new UnsatisfiedLinkError("Could not find JNA native support");
-                }
+                throw new UnsatisfiedLinkError("Could not find JNA native support");
             }
 
             LOG.log(DEBUG_JNA_LOAD_LEVEL, "Trying {0}", lib.getAbsolutePath());
